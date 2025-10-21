@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetLife Pro - Network Lifecycle Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --success-500: #10b981;
+            --success-600: #059669;
+            --warning-500: #f59e0b;
+            --warning-600: #d97706;
+            --danger-500: #ef4444;
+            --danger-600: #dc2626;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        .dark {
+            --bg-primary: var(--gray-900);
+            --bg-secondary: var(--gray-800);
+            --bg-card: var(--gray-800);
+            --text-primary: white;
+            --text-secondary: var(--gray-300);
+            --border-color: var(--gray-700);
+        }
+
+        .light {
+            --bg-primary: white;
+            --bg-secondary: var(--gray-100);
+            --bg-card: white;
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-700);
+            --border-color: var(--gray-200);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-secondary);
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 0 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            color: var(--primary-500);
+            margin-right: 0.75rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-500);
+            color: white;
+        }
+
+        .nav-links i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .positive {
+            color: var(--success-500);
+        }
+
+        .negative {
+            color: var(--danger-500);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Reports Section */
+        .reports-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .report-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .report-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .report-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .report-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-button {
+            background-color: var(--primary-500);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .report-button:hover {
+            background-color: var(--primary-600);
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            margin-bottom: 2rem;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .timeline-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .urgency-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .critical {
+            background-color: var(--danger-500);
+            color: white;
+        }
+
+        .high {
+            background-color: var(--warning-500);
+            color: white;
+        }
+
+        .medium {
+            background-color: var(--warning-500);
+            color: white;
+        }
+
+        .low {
+            background-color: var(--success-500);
+            color: white;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .timeline-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .timeline-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .timeline-progress {
+            height: 6px;
+            background-color: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .timeline-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        /* Rating Section */
+        .rating-section {
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        .rating-button {
+            background-color: var(--primary-500);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .rating-button:hover {
+            background-color: var(--primary-600);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: var(--gray-300);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.active {
+            color: var(--warning-500);
+        }
+
+        .comment-box {
+            width: 100%;
+            height: 100px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            resize: none;
+            margin-bottom: 1rem;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-rating {
+            width: 100%;
+            background-color: var(--primary-500);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-rating:hover:not(:disabled) {
+            background-color: var(--primary-600);
+        }
+
+        .submit-rating:disabled {
+            background-color: var(--gray-300);
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 2rem 0;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success-500);
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-subtext {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                gap: 0.5rem;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+            }
+            
+            .nav-links a {
+                white-space: nowrap;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .reports-grid, .timeline-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-network-wired"></i>
+                <h1>NetLife Pro</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-cogs"></i> Configuration</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> Alerts</a></li>
+                <li><a href="#"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="#"><i class="fas fa-question-circle"></i> Support</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h2>Network Dashboard</h2>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">JD</div>
+                        <span>John Doe</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Network Health</div>
+                        <div class="stat-icon" style="background-color: var(--success-500);">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">94%</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 2% from last week
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Devices Online</div>
+                        <div class="stat-icon" style="background-color: var(--primary-500);">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">248/256</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 8 devices restored
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Avg Response Time</div>
+                        <div class="stat-icon" style="background-color: var(--warning-500);">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">42ms</div>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-up"></i> 5ms from last week
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Security Threats</div>
+                        <div class="stat-icon" style="background-color: var(--danger-500);">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-down"></i> 2 resolved today
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Failure Probability Forecast</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="failureChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Device Health by Region</div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="regionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div class="reports-section">
+                <div class="section-header">
+                    <div class="section-title">Network Reports</div>
+                    <div class="section-actions">
+                        <button class="action-btn"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                </div>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--primary-500);">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="report-title">Executive Report</div>
+                        </div>
+                        <div class="report-description">
+                            High-level overview of network performance and business impact.
+                        </div>
+                        <button class="report-button" data-report="executive">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--success-500);">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="report-title">Management Report</div>
+                        </div>
+                        <div class="report-description">
+                            Detailed analysis of network operations and resource allocation.
+                        </div>
+                        <button class="report-button" data-report="management">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--warning-500);">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="report-title">Operations Report</div>
+                        </div>
+                        <div class="report-description">
+                            Technical details and performance metrics for operations teams.
+                        </div>
+                        <button class="report-button" data-report="operations">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--primary-500);">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="report-title">Executive + Management</div>
+                        </div>
+                        <div class="report-description">
+                            Combined report with executive summary and management details.
+                        </div>
+                        <button class="report-button" data-report="executive-management">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--success-500);">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="report-title">Management + Operations</div>
+                        </div>
+                        <div class="report-description">
+                            Comprehensive report bridging management and operational perspectives.
+                        </div>
+                        <button class="report-button" data-report="management-operations">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--warning-500);">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="report-title">Executive + Operations</div>
+                        </div>
+                        <div class="report-description">
+                            Strategic overview with technical implementation details.
+                        </div>
+                        <button class="report-button" data-report="executive-operations">Generate Report</button>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon" style="background-color: var(--danger-500);">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                            <div class="report-title">Technical Analysis</div>
+                        </div>
+                        <div class="report-description">
+                            In-depth technical analysis of network performance and issues.
+                        </div>
+                        <button class="report-button" data-report="technical">Generate Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Section -->
+            <div class="timeline-section">
+                <div class="section-header">
+                    <div class="section-title">Upcoming Maintenance</div>
+                    <div class="section-actions">
+                        <button class="action-btn"><i class="fas fa-plus"></i> Add Schedule</button>
+                    </div>
+                </div>
+                <div class="timeline-grid">
+                    <div class="timeline-card">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Router Firmware Update</div>
+                            <div class="urgency-badge critical">Critical</div>
+                        </div>
+                        <div class="timeline-description">
+                            Critical security patches required for core network routers. Update must be completed within 7 days.
+                        </div>
+                        <div class="timeline-progress">
+                            <div class="timeline-progress-bar" style="width: 90%; background-color: var(--danger-500);"></div>
+                        </div>
+                        <div class="timeline-footer">
+                            <div class="timeline-date">Due: 5 days</div>
+                            <button class="report-button">View Details</button>
+                        </div>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Switch Replacement</div>
+                            <div class="urgency-badge high">High</div>
+                        </div>
+                        <div class="timeline-description">
+                            Replace aging switches in data center to prevent potential failures.
+                        </div>
+                        <div class="timeline-progress">
+                            <div class="timeline-progress-bar" style="width: 60%; background-color: var(--warning-500);"></div>
+                        </div>
+                        <div class="timeline-footer">
+                            <div class="timeline-date">Due: 15 days</div>
+                            <button class="report-button">View Details</button>
+                        </div>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Bandwidth Upgrade</div>
+                            <div class="urgency-badge medium">Medium</div>
+                        </div>
+                        <div class="timeline-description">
+                            Upgrade internet bandwidth to accommodate increased remote workforce.
+                        </div>
+                        <div class="timeline-progress">
+                            <div class="timeline-progress-bar" style="width: 30%; background-color: var(--warning-500);"></div>
+                        </div>
+                        <div class="timeline-footer">
+                            <div class="timeline-date">Due: 45 days</div>
+                            <button class="report-button">View Details</button>
+                        </div>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="timeline-header">
+                            <div class="timeline-title">Security Audit</div>
+                            <div class="urgency-badge low">Low</div>
+                        </div>
+                        <div class="timeline-description">
+                            Annual comprehensive security audit and compliance review.
+                        </div>
+                        <div class="timeline-progress">
+                            <div class="timeline-progress-bar" style="width: 10%; background-color: var(--success-500);"></div>
+                        </div>
+                        <div class="timeline-footer">
+                            <div class="timeline-date">Due: 120 days</div>
+                            <button class="report-button">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rating Section -->
+            <div class="rating-section">
+                <button class="rating-button" id="openRatingModal">
+                    <i class="fas fa-star"></i> Rate Our Platform
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="modal" id="ratingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Rate Our Platform</div>
+                <button class="close-modal" id="closeRatingModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="star-rating" id="starRating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <textarea class="comment-box" id="commentBox" placeholder="Tell us about your experience (max 200 characters)" maxlength="200"></textarea>
+                <div class="char-count"><span id="charCount">0</span>/200</div>
+                <button class="submit-rating" id="submitRating" disabled>Submit Rating</button>
+            </div>
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✓</div>
+                <div class="success-text">Submitted!</div>
+                <div class="success-subtext">Thank you for your feedback</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('light')) {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Report Buttons
+        const reportButtons = document.querySelectorAll('.report-button');
+        reportButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const reportType = this.getAttribute('data-report');
+                alert(`Generating ${formatReportName(reportType)}...`);
+                // In a real application, this would trigger the report generation process
+            });
+        });
+
+        function formatReportName(reportType) {
+            return reportType.split('-')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        // Rating Modal
+        const ratingModal = document.getElementById('ratingModal');
+        const openRatingModal = document.getElementById('openRatingModal');
+        const closeRatingModal = document.getElementById('closeRatingModal');
+        const stars = document.querySelectorAll('.star');
+        const commentBox = document.getElementById('commentBox');
+        const charCount = document.getElementById('charCount');
+        const submitRating = document.getElementById('submitRating');
+        const successMessage = document.getElementById('successMessage');
+        const modalBody = document.querySelector('.modal-body');
+
+        let selectedRating = 0;
+
+        openRatingModal.addEventListener('click', () => {
+            ratingModal.style.display = 'flex';
+        });
+
+        closeRatingModal.addEventListener('click', () => {
+            ratingModal.style.display = 'none';
+            resetRatingForm();
+        });
+
+        // Star Rating
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.getAttribute('data-rating'));
+                updateStars(selectedRating);
+                updateSubmitButton();
+            });
+
+            star.addEventListener('mouseover', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                updateStars(rating, true);
+            });
+
+            star.addEventListener('mouseout', function() {
+                updateStars(selectedRating);
+            });
+        });
+
+        function updateStars(rating, isHover = false) {
+            stars.forEach(star => {
+                const starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Comment Box Character Count
+        commentBox.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            updateSubmitButton();
+        });
+
+        function updateSubmitButton() {
+            if (selectedRating > 0) {
+                submitRating.disabled = false;
+            } else {
+                submitRating.disabled = true;
+            }
+        }
+
+        // Submit Rating
+        submitRating.addEventListener('click', function() {
+            // Show success message
+            modalBody.style.display = 'none';
+            successMessage.style.display = 'block';
+            
+            // After 3 seconds, close the modal
+            setTimeout(() => {
+                ratingModal.style.display = 'none';
+                resetRatingForm();
+            }, 3000);
+        });
+
+        function resetRatingForm() {
+            selectedRating = 0;
+            updateStars(0);
+            commentBox.value = '';
+            charCount.textContent = '0';
+            submitRating.disabled = true;
+            modalBody.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        // Charts
+        // Failure Probability Chart
+        const failureCtx = document.getElementById('failureChart').getContext('2d');
+        const failureChart = new Chart(failureCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Failure Probability',
+                    data: [12, 19, 15, 17, 14, 16, 18, 15, 13, 11, 9, 7],
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 25,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Region Health Chart
+        const regionCtx = document.getElementById('regionChart').getContext('2d');
+        const regionChart = new Chart(regionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Western Cape', 'Gauteng', 'KwaZulu-Natal', 'Eastern Cape', 'Free State', 'Other'],
+                datasets: [{
+                    data: [30, 25, 15, 12, 10, 8],
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#10b981',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#8b5cf6',
+                        '#6b7280'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
