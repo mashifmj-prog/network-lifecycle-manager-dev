@@ -345,6 +345,95 @@
             display: block;
         }
 
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .report-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .report-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .report-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .report-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .report-button {
+            background-color: var(--primary-500);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex: 1;
+        }
+
+        .report-button:hover {
+            background-color: var(--primary-600);
+        }
+
+        .share-button {
+            background-color: var(--success-500);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button:hover {
+            background-color: var(--success-600);
+        }
+
         /* Timeline Section */
         .timeline-section {
             margin-bottom: 2rem;
@@ -482,9 +571,11 @@
             background-color: var(--bg-card);
             border-radius: 0.75rem;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             padding: 2rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -596,6 +687,82 @@
             color: var(--text-secondary);
         }
 
+        /* Custom Report Styles */
+        .custom-report-options {
+            margin-bottom: 1.5rem;
+        }
+
+        .report-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .report-option input {
+            margin-right: 0.75rem;
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .export-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .export-option:hover {
+            background-color: var(--primary-500);
+            color: white;
+        }
+
+        .export-option.selected {
+            background-color: var(--primary-500);
+            color: white;
+        }
+
+        .export-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .share-method {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .share-method:hover {
+            background-color: var(--success-500);
+            color: white;
+        }
+
+        .share-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
         /* Responsive Styles */
         @media (max-width: 1024px) {
             .charts-section {
@@ -631,7 +798,7 @@
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
             
-            .timeline-grid {
+            .timeline-grid, .reports-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -661,6 +828,7 @@
                             <a href="#" data-report="management-operations">Management + Operations</a>
                             <a href="#" data-report="executive-operations">Executive + Operations</a>
                             <a href="#" data-report="technical">Technical Analysis</a>
+                            <a href="#" data-report="custom" id="customReportOption">Custom Report</a>
                         </div>
                     </div>
                 </li>
@@ -786,6 +954,7 @@
                             <a href="#" data-report="management-operations">Management + Operations</a>
                             <a href="#" data-report="executive-operations">Executive + Operations</a>
                             <a href="#" data-report="technical">Technical Analysis</a>
+                            <a href="#" data-report="custom" id="customReportDropdown">Custom Report</a>
                         </div>
                     </div>
                 </div>
@@ -800,7 +969,12 @@
                         <div class="report-description">
                             High-level overview of network performance and business impact.
                         </div>
-                        <button class="report-button" data-report="executive">Generate Report</button>
+                        <div class="report-actions">
+                            <button class="report-button" data-report="executive">Generate</button>
+                            <button class="share-button" data-report="executive">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="report-card">
                         <div class="report-header">
@@ -812,7 +986,12 @@
                         <div class="report-description">
                             Detailed analysis of network operations and resource allocation.
                         </div>
-                        <button class="report-button" data-report="management">Generate Report</button>
+                        <div class="report-actions">
+                            <button class="report-button" data-report="management">Generate</button>
+                            <button class="share-button" data-report="management">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="report-card">
                         <div class="report-header">
@@ -824,7 +1003,12 @@
                         <div class="report-description">
                             Technical details and performance metrics for operations teams.
                         </div>
-                        <button class="report-button" data-report="operations">Generate Report</button>
+                        <div class="report-actions">
+                            <button class="report-button" data-report="operations">Generate</button>
+                            <button class="share-button" data-report="operations">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -942,6 +1126,119 @@
         </div>
     </div>
 
+    <!-- Custom Report Modal -->
+    <div class="modal" id="customReportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Create Custom Report</div>
+                <button class="close-modal" id="closeCustomReportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Select the report sections you want to include:</p>
+                <div class="custom-report-options">
+                    <div class="report-option">
+                        <input type="checkbox" id="executiveSection" value="executive">
+                        <label for="executiveSection">Executive Summary</label>
+                    </div>
+                    <div class="report-option">
+                        <input type="checkbox" id="managementSection" value="management">
+                        <label for="managementSection">Management Overview</label>
+                    </div>
+                    <div class="report-option">
+                        <input type="checkbox" id="operationsSection" value="operations">
+                        <label for="operationsSection">Operations Details</label>
+                    </div>
+                    <div class="report-option">
+                        <input type="checkbox" id="technicalSection" value="technical">
+                        <label for="technicalSection">Technical Analysis</label>
+                    </div>
+                    <div class="report-option">
+                        <input type="checkbox" id="chartsSection" value="charts">
+                        <label for="chartsSection">Charts & Visualizations</label>
+                    </div>
+                    <div class="report-option">
+                        <input type="checkbox" id="timelineSection" value="timeline">
+                        <label for="timelineSection">Maintenance Timeline</label>
+                    </div>
+                </div>
+                <button class="submit-rating" id="generateCustomReport">Generate Custom Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Report Modal -->
+    <div class="modal" id="shareReportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Share Report</div>
+                <button class="close-modal" id="closeShareReportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="selectedReportInfo" style="margin-bottom: 1.5rem; padding: 1rem; background-color: var(--bg-secondary); border-radius: 0.5rem;">
+                    <strong>Selected Report:</strong> <span id="reportName">Executive Report</span>
+                </div>
+                
+                <p>Select export format:</p>
+                <div class="export-options">
+                    <div class="export-option" data-format="pdf">
+                        <div class="export-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <span>PDF</span>
+                    </div>
+                    <div class="export-option" data-format="excel">
+                        <div class="export-icon">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <span>Excel</span>
+                    </div>
+                    <div class="export-option" data-format="csv">
+                        <div class="export-icon">
+                            <i class="fas fa-file-csv"></i>
+                        </div>
+                        <span>CSV</span>
+                    </div>
+                    <div class="export-option" data-format="html">
+                        <div class="export-icon">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <span>HTML</span>
+                    </div>
+                </div>
+                
+                <p>Select sharing method:</p>
+                <div class="share-methods">
+                    <div class="share-method" data-method="email">
+                        <div class="share-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <span>Email</span>
+                    </div>
+                    <div class="share-method" data-method="link">
+                        <div class="share-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <span>Share Link</span>
+                    </div>
+                    <div class="share-method" data-method="device">
+                        <div class="share-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <span>Device</span>
+                    </div>
+                    <div class="share-method" data-method="cloud">
+                        <div class="share-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <span>Cloud</span>
+                    </div>
+                </div>
+                
+                <button class="submit-rating" id="shareReportBtn">Share Report</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
@@ -967,8 +1264,9 @@
                 navLinks.forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
                 
-                // In a real application, this would load the appropriate page content
-                alert(`Loading ${this.textContent.trim()} page...`);
+                // Show loading message for each page
+                const pageName = this.textContent.trim();
+                alert(`Loading ${pageName} page...`);
             });
         });
 
@@ -996,15 +1294,96 @@
             alert('Navigating to Home page...');
         });
 
-        // Report Buttons
+        // Report Generation
         const reportButtons = document.querySelectorAll('.report-button, .dropdown-content a');
         reportButtons.forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 const reportType = this.getAttribute('data-report');
-                alert(`Generating ${formatReportName(reportType)}...`);
-                // In a real application, this would trigger the report generation process
+                
+                if (reportType === 'custom') {
+                    // Open custom report modal
+                    document.getElementById('customReportModal').style.display = 'flex';
+                } else {
+                    // Generate standard report
+                    alert(`Generating ${formatReportName(reportType)}...`);
+                    // In a real application, this would trigger the report generation process
+                }
             });
+        });
+
+        // Share Buttons
+        const shareButtons = document.querySelectorAll('.share-button');
+        shareButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const reportType = this.getAttribute('data-report');
+                const reportName = formatReportName(reportType);
+                
+                // Set the report name in the share modal
+                document.getElementById('reportName').textContent = reportName;
+                
+                // Open share modal
+                document.getElementById('shareReportModal').style.display = 'flex';
+            });
+        });
+
+        // Custom Report Generation
+        document.getElementById('generateCustomReport').addEventListener('click', function() {
+            const selectedSections = [];
+            document.querySelectorAll('.custom-report-options input:checked').forEach(checkbox => {
+                selectedSections.push(checkbox.value);
+            });
+            
+            if (selectedSections.length === 0) {
+                alert('Please select at least one section for your custom report.');
+                return;
+            }
+            
+            document.getElementById('customReportModal').style.display = 'none';
+            alert(`Generating custom report with sections: ${selectedSections.join(', ')}...`);
+        });
+
+        // Export Format Selection
+        const exportOptions = document.querySelectorAll('.export-option');
+        let selectedFormat = 'pdf';
+        
+        exportOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                exportOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedFormat = this.getAttribute('data-format');
+            });
+        });
+
+        // Share Method Selection
+        const shareMethods = document.querySelectorAll('.share-method');
+        let selectedMethod = 'email';
+        
+        shareMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                shareMethods.forEach(m => m.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedMethod = this.getAttribute('data-method');
+            });
+        });
+
+        // Share Report Button
+        document.getElementById('shareReportBtn').addEventListener('click', function() {
+            const reportName = document.getElementById('reportName').textContent;
+            
+            document.getElementById('shareReportModal').style.display = 'none';
+            alert(`Sharing ${reportName} as ${selectedFormat.toUpperCase()} via ${selectedMethod}...`);
+        });
+
+        // Custom Report Option
+        document.getElementById('customReportOption').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('customReportModal').style.display = 'flex';
+        });
+
+        document.getElementById('customReportDropdown').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('customReportModal').style.display = 'flex';
         });
 
         function formatReportName(reportType) {
@@ -1111,6 +1490,25 @@
             modalBody.style.display = 'block';
             successMessage.style.display = 'none';
         }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                if (event.target.id === 'ratingModal') {
+                    resetRatingForm();
+                }
+            }
+        });
+
+        // Close modal buttons
+        document.getElementById('closeCustomReportModal').addEventListener('click', function() {
+            document.getElementById('customReportModal').style.display = 'none';
+        });
+
+        document.getElementById('closeShareReportModal').addEventListener('click', function() {
+            document.getElementById('shareReportModal').style.display = 'none';
+        });
 
         // Charts
         // Failure Probability Chart
