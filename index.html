@@ -67,6 +67,9 @@
             background-color: var(--bg-secondary);
             padding: 1.5rem 1rem;
             border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
         }
 
         .logo {
@@ -82,9 +85,21 @@
             margin-right: 0.75rem;
         }
 
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
         .logo h1 {
             font-size: 1.5rem;
             font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .logo .subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
         }
 
         .nav-links {
@@ -120,6 +135,7 @@
             flex: 1;
             padding: 1.5rem 2rem;
             overflow-y: auto;
+            margin-left: 250px;
         }
 
         .header {
@@ -184,6 +200,15 @@
             font-weight: bold;
         }
 
+        /* Page Content Styles */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
@@ -202,7 +227,7 @@
 
         .stat-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
@@ -322,7 +347,7 @@
             background-color: var(--bg-card);
             min-width: 250px;
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-            z-index: 1;
+            z-index: 10;
             border-radius: 0.5rem;
             overflow: hidden;
             border: 1px solid var(--border-color);
@@ -553,6 +578,31 @@
             background-color: var(--primary-600);
         }
 
+        /* Help Button */
+        .help-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-500);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-button:hover {
+            background-color: var(--primary-600);
+            transform: scale(1.05);
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -763,10 +813,126 @@
             margin-bottom: 0.5rem;
         }
 
+        /* AI Help Chat Styles */
+        .chat-container {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: var(--primary-500);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            align-self: flex-start;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .chat-input button {
+            margin-left: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--primary-500);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Scheduling Styles */
+        .schedule-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Contextual Help */
+        .contextual-help {
+            position: absolute;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+            max-width: 300px;
+            display: none;
+        }
+
+        .help-trigger {
+            position: relative;
+        }
+
+        .help-trigger:hover .contextual-help {
+            display: block;
+        }
+
         /* Responsive Styles */
         @media (max-width: 1024px) {
             .charts-section {
                 grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
             }
         }
 
@@ -776,8 +942,13 @@
             }
             
             .sidebar {
+                position: relative;
                 width: 100%;
-                padding: 1rem;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
             }
             
             .nav-links {
@@ -810,16 +981,19 @@
         <aside class="sidebar">
             <div class="logo">
                 <i class="fas fa-network-wired"></i>
-                <h1>NetLife Pro</h1>
+                <div class="logo-text">
+                    <h1>NetLife Pro</h1>
+                    <div class="subtitle">Network Lifecycle Management</div>
+                </div>
             </div>
             <ul class="nav-links">
-                <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
-                <li><a href="#"><i class="fas fa-cogs"></i> Configuration</a></li>
-                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" data-page="analytics"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#" data-page="configuration"><i class="fas fa-cogs"></i> Configuration</a></li>
+                <li><a href="#" data-page="history"><i class="fas fa-history"></i> History</a></li>
                 <li>
                     <div class="dropdown">
-                        <a href="#"><i class="fas fa-file-alt"></i> Reports <i class="fas fa-chevron-down"></i></a>
+                        <a href="#" data-page="reports"><i class="fas fa-file-alt"></i> Reports <i class="fas fa-chevron-down"></i></a>
                         <div class="dropdown-content">
                             <a href="#" data-report="executive">Executive Report</a>
                             <a href="#" data-report="management">Management Report</a>
@@ -832,271 +1006,372 @@
                         </div>
                     </div>
                 </li>
-                <li><a href="#"><i class="fas fa-bell"></i> Alerts</a></li>
-                <li><a href="#"><i class="fas fa-users"></i> Users</a></li>
-                <li><a href="#"><i class="fas fa-question-circle"></i> Support</a></li>
+                <li><a href="#" data-page="alerts"><i class="fas fa-bell"></i> Alerts</a></li>
+                <li><a href="#" data-page="users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="#" data-page="support"><i class="fas fa-question-circle"></i> Support</a></li>
             </ul>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <h2>Network Dashboard</h2>
-                <div class="header-actions">
-                    <button class="header-btn" id="refreshBtn">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                    <button class="header-btn" id="homeBtn">
-                        <i class="fas fa-home"></i> Home
-                    </button>
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <div class="user-profile">
-                        <div class="user-avatar">MM</div>
-                        <span>MJ Mashifane<br><small>Network Engineer & Administrator</small></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats Grid -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Network Health</div>
-                        <div class="stat-icon" style="background-color: var(--success-500);">
-                            <i class="fas fa-heartbeat"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">94%</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 2% from last week
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Devices Online</div>
-                        <div class="stat-icon" style="background-color: var(--primary-500);">
-                            <i class="fas fa-server"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">248/256</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 8 devices restored
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Avg Response Time</div>
-                        <div class="stat-icon" style="background-color: var(--warning-500);">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">42ms</div>
-                    <div class="stat-change negative">
-                        <i class="fas fa-arrow-up"></i> 5ms from last week
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-title">Security Threats</div>
-                        <div class="stat-icon" style="background-color: var(--danger-500);">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-down"></i> 2 resolved today
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts Section -->
-            <div class="charts-section">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div class="chart-title">Failure Probability Forecast</div>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn"><i class="fas fa-ellipsis-v"></i></button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="failureChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div class="chart-title">Device Health by Region</div>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn"><i class="fas fa-ellipsis-v"></i></button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="regionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports Section -->
-            <div class="reports-section">
-                <div class="section-header">
-                    <div class="section-title">Network Reports</div>
-                    <div class="dropdown">
-                        <button class="dropdown-btn">
-                            <i class="fas fa-file-download"></i> Generate Report <i class="fas fa-chevron-down"></i>
+            <!-- Dashboard Page -->
+            <div class="page-content active" id="dashboard-page">
+                <!-- Header -->
+                <div class="header">
+                    <h2>Network Dashboard</h2>
+                    <div class="header-actions">
+                        <button class="header-btn" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
                         </button>
-                        <div class="dropdown-content">
-                            <a href="#" data-report="executive">Executive Report</a>
-                            <a href="#" data-report="management">Management Report</a>
-                            <a href="#" data-report="operations">Operations Report</a>
-                            <a href="#" data-report="executive-management">Executive + Management</a>
-                            <a href="#" data-report="management-operations">Management + Operations</a>
-                            <a href="#" data-report="executive-operations">Executive + Operations</a>
-                            <a href="#" data-report="technical">Technical Analysis</a>
-                            <a href="#" data-report="custom" id="customReportDropdown">Custom Report</a>
+                        <button class="header-btn" id="homeBtn">
+                            <i class="fas fa-home"></i> Home
+                        </button>
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="user-profile">
+                            <div class="user-avatar">MM</div>
+                            <span>MJ Mashifane<br><small>Network Engineer & Administrator</small></span>
                         </div>
                     </div>
                 </div>
-                <div class="reports-grid">
-                    <div class="report-card">
-                        <div class="report-header">
-                            <div class="report-icon" style="background-color: var(--primary-500);">
-                                <i class="fas fa-chart-line"></i>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Network Health</div>
+                            <div class="stat-icon" style="background-color: var(--success-500);">
+                                <i class="fas fa-heartbeat"></i>
                             </div>
-                            <div class="report-title">Executive Report</div>
                         </div>
-                        <div class="report-description">
-                            High-level overview of network performance and business impact.
-                        </div>
-                        <div class="report-actions">
-                            <button class="report-button" data-report="executive">Generate</button>
-                            <button class="share-button" data-report="executive">
-                                <i class="fas fa-share-alt"></i>
-                            </button>
+                        <div class="stat-value">94%</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 2% from last week
                         </div>
                     </div>
-                    <div class="report-card">
-                        <div class="report-header">
-                            <div class="report-icon" style="background-color: var(--success-500);">
-                                <i class="fas fa-cogs"></i>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Devices Online</div>
+                            <div class="stat-icon" style="background-color: var(--primary-500);">
+                                <i class="fas fa-server"></i>
                             </div>
-                            <div class="report-title">Management Report</div>
                         </div>
-                        <div class="report-description">
-                            Detailed analysis of network operations and resource allocation.
-                        </div>
-                        <div class="report-actions">
-                            <button class="report-button" data-report="management">Generate</button>
-                            <button class="share-button" data-report="management">
-                                <i class="fas fa-share-alt"></i>
-                            </button>
+                        <div class="stat-value">248/256</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 8 devices restored
                         </div>
                     </div>
-                    <div class="report-card">
-                        <div class="report-header">
-                            <div class="report-icon" style="background-color: var(--warning-500);">
-                                <i class="fas fa-tools"></i>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Avg Response Time</div>
+                            <div class="stat-icon" style="background-color: var(--warning-500);">
+                                <i class="fas fa-tachometer-alt"></i>
                             </div>
-                            <div class="report-title">Operations Report</div>
                         </div>
-                        <div class="report-description">
-                            Technical details and performance metrics for operations teams.
+                        <div class="stat-value">42ms</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-up"></i> 5ms from last week
                         </div>
-                        <div class="report-actions">
-                            <button class="report-button" data-report="operations">Generate</button>
-                            <button class="share-button" data-report="operations">
-                                <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Security Threats</div>
+                            <div class="stat-icon" style="background-color: var(--danger-500);">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-down"></i> 2 resolved today
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Failure Probability Forecast</div>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="failureChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Device Health by Region</div>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="regionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div class="reports-section">
+                    <div class="section-header">
+                        <div class="section-title">Network Reports</div>
+                        <div class="dropdown">
+                            <button class="dropdown-btn">
+                                <i class="fas fa-file-download"></i> Generate Report <i class="fas fa-chevron-down"></i>
                             </button>
+                            <div class="dropdown-content">
+                                <a href="#" data-report="executive">Executive Report</a>
+                                <a href="#" data-report="management">Management Report</a>
+                                <a href="#" data-report="operations">Operations Report</a>
+                                <a href="#" data-report="executive-management">Executive + Management</a>
+                                <a href="#" data-report="management-operations">Management + Operations</a>
+                                <a href="#" data-report="executive-operations">Executive + Operations</a>
+                                <a href="#" data-report="technical">Technical Analysis</a>
+                                <a href="#" data-report="custom" id="customReportDropdown">Custom Report</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <div class="report-header">
+                                <div class="report-icon" style="background-color: var(--primary-500);">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="report-title">Executive Report</div>
+                            </div>
+                            <div class="report-description">
+                                High-level overview of network performance and business impact.
+                            </div>
+                            <div class="report-actions">
+                                <button class="report-button" data-report="executive">Generate</button>
+                                <button class="share-button" data-report="executive">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-card">
+                            <div class="report-header">
+                                <div class="report-icon" style="background-color: var(--success-500);">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="report-title">Management Report</div>
+                            </div>
+                            <div class="report-description">
+                                Detailed analysis of network operations and resource allocation.
+                            </div>
+                            <div class="report-actions">
+                                <button class="report-button" data-report="management">Generate</button>
+                                <button class="share-button" data-report="management">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-card">
+                            <div class="report-header">
+                                <div class="report-icon" style="background-color: var(--warning-500);">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="report-title">Operations Report</div>
+                            </div>
+                            <div class="report-description">
+                                Technical details and performance metrics for operations teams.
+                            </div>
+                            <div class="report-actions">
+                                <button class="report-button" data-report="operations">Generate</button>
+                                <button class="share-button" data-report="operations">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Section -->
+                <div class="timeline-section">
+                    <div class="section-header">
+                        <div class="section-title">Upcoming Maintenance</div>
+                        <div class="section-actions">
+                            <button class="action-btn"><i class="fas fa-plus"></i> Add Schedule</button>
+                        </div>
+                    </div>
+                    <div class="timeline-grid">
+                        <div class="timeline-card">
+                            <div class="timeline-header">
+                                <div class="timeline-title">Router Firmware Update</div>
+                                <div class="urgency-badge critical">Critical</div>
+                            </div>
+                            <div class="timeline-description">
+                                Critical security patches required for core network routers. Update must be completed within 7 days.
+                            </div>
+                            <div class="timeline-progress">
+                                <div class="timeline-progress-bar" style="width: 90%; background-color: var(--danger-500);"></div>
+                            </div>
+                            <div class="timeline-footer">
+                                <div class="timeline-date">Due: 5 days</div>
+                                <button class="report-button">View Details</button>
+                            </div>
+                        </div>
+                        <div class="timeline-card">
+                            <div class="timeline-header">
+                                <div class="timeline-title">Switch Replacement</div>
+                                <div class="urgency-badge high">High</div>
+                            </div>
+                            <div class="timeline-description">
+                                Replace aging switches in data center to prevent potential failures.
+                            </div>
+                            <div class="timeline-progress">
+                                <div class="timeline-progress-bar" style="width: 60%; background-color: var(--warning-500);"></div>
+                            </div>
+                            <div class="timeline-footer">
+                                <div class="timeline-date">Due: 15 days</div>
+                                <button class="report-button">View Details</button>
+                            </div>
+                        </div>
+                        <div class="timeline-card">
+                            <div class="timeline-header">
+                                <div class="timeline-title">Bandwidth Upgrade</div>
+                                <div class="urgency-badge medium">Medium</div>
+                            </div>
+                            <div class="timeline-description">
+                                Upgrade internet bandwidth to accommodate increased remote workforce.
+                            </div>
+                            <div class="timeline-progress">
+                                <div class="timeline-progress-bar" style="width: 30%; background-color: var(--warning-500);"></div>
+                            </div>
+                            <div class="timeline-footer">
+                                <div class="timeline-date">Due: 45 days</div>
+                                <button class="report-button">View Details</button>
+                            </div>
+                        </div>
+                        <div class="timeline-card">
+                            <div class="timeline-header">
+                                <div class="timeline-title">Security Audit</div>
+                                <div class="urgency-badge low">Low</div>
+                            </div>
+                            <div class="timeline-description">
+                                Annual comprehensive security audit and compliance review.
+                            </div>
+                            <div class="timeline-progress">
+                                <div class="timeline-progress-bar" style="width: 10%; background-color: var(--success-500);"></div>
+                            </div>
+                            <div class="timeline-footer">
+                                <div class="timeline-date">Due: 120 days</div>
+                                <button class="report-button">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating Section -->
+                <div class="rating-section">
+                    <button class="rating-button" id="openRatingModal">
+                        <i class="fas fa-star"></i> Rate Our Platform
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div class="page-content" id="analytics-page">
+                <div class="header">
+                    <h2>Analytics</h2>
+                    <div class="header-actions">
+                        <button class="header-btn" id="refreshAnalytics">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Network Performance Trends</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="analyticsChart"></canvas>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Peak Usage Hours</div>
+                            <div class="stat-icon" style="background-color: var(--primary-500);">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">14:00-16:00</div>
+                        <div class="stat-change">
+                            Daily pattern detected
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Predicted Issues</div>
+                            <div class="stat-icon" style="background-color: var(--warning-500);">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change">
+                            Next 7 days forecast
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Timeline Section -->
-            <div class="timeline-section">
-                <div class="section-header">
-                    <div class="section-title">Upcoming Maintenance</div>
-                    <div class="section-actions">
-                        <button class="action-btn"><i class="fas fa-plus"></i> Add Schedule</button>
+            <!-- Configuration Page -->
+            <div class="page-content" id="configuration-page">
+                <div class="header">
+                    <h2>Configuration</h2>
+                    <div class="header-actions">
+                        <button class="header-btn">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
                     </div>
                 </div>
-                <div class="timeline-grid">
-                    <div class="timeline-card">
-                        <div class="timeline-header">
-                            <div class="timeline-title">Router Firmware Update</div>
-                            <div class="urgency-badge critical">Critical</div>
-                        </div>
-                        <div class="timeline-description">
-                            Critical security patches required for core network routers. Update must be completed within 7 days.
-                        </div>
-                        <div class="timeline-progress">
-                            <div class="timeline-progress-bar" style="width: 90%; background-color: var(--danger-500);"></div>
-                        </div>
-                        <div class="timeline-footer">
-                            <div class="timeline-date">Due: 5 days</div>
-                            <button class="report-button">View Details</button>
-                        </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Network Device Configuration</div>
                     </div>
-                    <div class="timeline-card">
-                        <div class="timeline-header">
-                            <div class="timeline-title">Switch Replacement</div>
-                            <div class="urgency-badge high">High</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-title">Configured Devices</div>
+                                <div class="stat-icon" style="background-color: var(--success-500);">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">224/256</div>
+                            <div class="stat-change">
+                                Optimal configuration
+                            </div>
                         </div>
-                        <div class="timeline-description">
-                            Replace aging switches in data center to prevent potential failures.
-                        </div>
-                        <div class="timeline-progress">
-                            <div class="timeline-progress-bar" style="width: 60%; background-color: var(--warning-500);"></div>
-                        </div>
-                        <div class="timeline-footer">
-                            <div class="timeline-date">Due: 15 days</div>
-                            <button class="report-button">View Details</button>
-                        </div>
-                    </div>
-                    <div class="timeline-card">
-                        <div class="timeline-header">
-                            <div class="timeline-title">Bandwidth Upgrade</div>
-                            <div class="urgency-badge medium">Medium</div>
-                        </div>
-                        <div class="timeline-description">
-                            Upgrade internet bandwidth to accommodate increased remote workforce.
-                        </div>
-                        <div class="timeline-progress">
-                            <div class="timeline-progress-bar" style="width: 30%; background-color: var(--warning-500);"></div>
-                        </div>
-                        <div class="timeline-footer">
-                            <div class="timeline-date">Due: 45 days</div>
-                            <button class="report-button">View Details</button>
-                        </div>
-                    </div>
-                    <div class="timeline-card">
-                        <div class="timeline-header">
-                            <div class="timeline-title">Security Audit</div>
-                            <div class="urgency-badge low">Low</div>
-                        </div>
-                        <div class="timeline-description">
-                            Annual comprehensive security audit and compliance review.
-                        </div>
-                        <div class="timeline-progress">
-                            <div class="timeline-progress-bar" style="width: 10%; background-color: var(--success-500);"></div>
-                        </div>
-                        <div class="timeline-footer">
-                            <div class="timeline-date">Due: 120 days</div>
-                            <button class="report-button">View Details</button>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-title">Pending Updates</div>
+                                <div class="stat-icon" style="background-color: var(--warning-500);">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value">18</div>
+                            <div class="stat-change">
+                                Schedule required
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Rating Section -->
-            <div class="rating-section">
-                <button class="rating-button" id="openRatingModal">
-                    <i class="fas fa-star"></i> Rate Our Platform
-                </button>
-            </div>
+            <!-- Other pages would follow similar structure -->
+            <!-- History, Alerts, Users, Support pages -->
+
         </main>
     </div>
+
+    <!-- Help Button -->
+    <button class="help-button" id="helpButton">
+        <i class="fas fa-question"></i>
+    </button>
 
     <!-- Rating Modal -->
     <div class="modal" id="ratingModal">
@@ -1161,6 +1436,14 @@
                         <label for="timelineSection">Maintenance Timeline</label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="reportName">Report Name:</label>
+                    <input type="text" id="reportName" placeholder="Enter custom report name">
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="saveTemplate">
+                    <label for="saveTemplate">Save as template for future use</label>
+                </div>
                 <button class="submit-rating" id="generateCustomReport">Generate Custom Report</button>
             </div>
         </div>
@@ -1175,7 +1458,7 @@
             </div>
             <div class="modal-body">
                 <div id="selectedReportInfo" style="margin-bottom: 1.5rem; padding: 1rem; background-color: var(--bg-secondary); border-radius: 0.5rem;">
-                    <strong>Selected Report:</strong> <span id="reportName">Executive Report</span>
+                    <strong>Selected Report:</strong> <span id="reportNameDisplay">Executive Report</span>
                 </div>
                 
                 <p>Select export format:</p>
@@ -1239,7 +1522,148 @@
         </div>
     </div>
 
+    <!-- Schedule Report Modal -->
+    <div class="modal" id="scheduleReportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Schedule Report</div>
+                <button class="close-modal" id="closeScheduleReportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="schedule-form">
+                    <div class="form-group">
+                        <label for="scheduleReportType">Report Type:</label>
+                        <select id="scheduleReportType">
+                            <option value="executive">Executive Report</option>
+                            <option value="management">Management Report</option>
+                            <option value="operations">Operations Report</option>
+                            <option value="custom">Custom Report</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleFrequency">Frequency:</label>
+                        <select id="scheduleFrequency">
+                            <option value="once">One-time</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleStart">Start Date & Time:</label>
+                        <input type="datetime-local" id="scheduleStart">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleEnd">End Date (optional):</label>
+                        <input type="date" id="scheduleEnd">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleRecipients">Recipients:</label>
+                        <input type="text" id="scheduleRecipients" placeholder="Enter email addresses">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scheduleFormat">Export Format:</label>
+                        <select id="scheduleFormat">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    
+                    <button class="submit-rating" id="saveScheduleBtn">Save Schedule</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Help Chat Modal -->
+    <div class="modal" id="helpChatModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">NetLife Pro Assistant</div>
+                <button class="close-modal" id="closeHelpChatModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai-message">
+                            Hello! I'm your NetLife Pro assistant. I can help you with network issues, report generation, and answer questions about your network infrastructure. How can I help you today?
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Ask about network issues, reports, or configuration...">
+                        <button id="sendMessageBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Comprehensive knowledge base for AI help system
+        const knowledgeBase = {
+            networkIssues: [
+                {
+                    question: "slow response time",
+                    answer: "High response times are often caused by bandwidth saturation, hardware limitations, or configuration issues. Check your bandwidth utilization and consider upgrading links or optimizing QoS settings.",
+                    solutions: ["Check bandwidth utilization", "Review QoS configurations", "Consider link upgrade"]
+                },
+                {
+                    question: "device offline",
+                    answer: "Offline devices can result from power issues, network connectivity problems, or device failures. Start by checking power and physical connections, then verify network reachability.",
+                    solutions: ["Check power supply", "Verify physical connections", "Test network connectivity"]
+                },
+                {
+                    question: "security threat",
+                    answer: "Security threats require immediate attention. Isolate affected systems, update security policies, and review access logs. Consider implementing additional security measures.",
+                    solutions: ["Isolate affected systems", "Update security policies", "Review access logs"]
+                },
+                {
+                    question: "high cpu utilization",
+                    answer: "High CPU utilization on network devices can indicate processing bottlenecks or misconfigurations. Check for routing loops, excessive logging, or need for hardware upgrade.",
+                    solutions: ["Check for routing loops", "Reduce logging verbosity", "Consider hardware upgrade"]
+                }
+            ],
+            reportHelp: [
+                {
+                    question: "custom report",
+                    answer: "Custom reports allow you to combine sections from different report types. You can select Executive, Management, Operations, and Technical sections to create a tailored report.",
+                    solutions: ["Select desired sections", "Name your report", "Save as template if needed"]
+                },
+                {
+                    question: "schedule report",
+                    answer: "You can schedule reports to be automatically generated and shared. Choose frequency, recipients, and format. Reports can be sent via email, shared links, or cloud storage.",
+                    solutions: ["Select report type", "Choose frequency", "Set recipients and format"]
+                }
+            ],
+            configuration: [
+                {
+                    question: "device configuration",
+                    answer: "Device configuration management helps maintain network consistency. Use templates for standard configurations and monitor for configuration drift.",
+                    solutions: ["Use configuration templates", "Monitor for changes", "Implement backup procedures"]
+                }
+            ]
+        };
+
+        // Sample data for demonstration
+        const sampleData = {
+            performanceHistory: [
+                { timestamp: "2024-01-15 09:00", health: 94, responseTime: 42, throughput: 850 },
+                { timestamp: "2024-01-15 10:00", health: 87, responseTime: 58, throughput: 720 },
+                { timestamp: "2024-01-15 11:00", health: 92, responseTime: 45, throughput: 890 },
+                { timestamp: "2024-01-15 12:00", health: 95, responseTime: 38, throughput: 920 }
+            ],
+            scheduledReports: [
+                { name: "Weekly Executive", type: "executive", frequency: "weekly", nextRun: "2024-01-19 09:00" },
+                { name: "Monthly Technical", type: "technical", frequency: "monthly", nextRun: "2024-02-01 08:00" }
+            ]
+        };
+
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -1256,56 +1680,60 @@
             }
         });
 
-        // Navigation Links
-        const navLinks = document.querySelectorAll('.nav-links a');
+        // Page Navigation
+        const navLinks = document.querySelectorAll('.nav-links a[data-page]');
+        const pageContents = document.querySelectorAll('.page-content');
+
         navLinks.forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
+                const targetPage = this.getAttribute('data-page');
+                
+                // Update active states
                 navLinks.forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Show loading message for each page
-                const pageName = this.textContent.trim();
-                alert(`Loading ${pageName} page...`);
+                // Show target page
+                pageContents.forEach(page => page.classList.remove('active'));
+                document.getElementById(`${targetPage}-page`).classList.add('active');
+                
+                // Update header title
+                const pageTitle = this.textContent.trim();
+                document.querySelector('.header h2').textContent = pageTitle;
             });
         });
 
         // Refresh Button
         const refreshBtn = document.getElementById('refreshBtn');
         refreshBtn.addEventListener('click', function() {
-            // Show loading indicator
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
-            
-            // Simulate refresh delay
             setTimeout(() => {
                 this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
-                alert('Page refreshed successfully!');
-            }, 1000);
+                // In a real app, this would refresh data from backend
+                alert('Data refreshed successfully!');
+            }, 1500);
         });
 
         // Home Button
         const homeBtn = document.getElementById('homeBtn');
         homeBtn.addEventListener('click', function() {
-            // Reset active nav link
             navLinks.forEach(l => l.classList.remove('active'));
             navLinks[0].classList.add('active');
-            
-            // In a real application, this would navigate to the home page
-            alert('Navigating to Home page...');
+            pageContents.forEach(page => page.classList.remove('active'));
+            document.getElementById('dashboard-page').classList.add('active');
+            document.querySelector('.header h2').textContent = 'Network Dashboard';
         });
 
         // Report Generation
-        const reportButtons = document.querySelectorAll('.report-button, .dropdown-content a');
+        const reportButtons = document.querySelectorAll('.report-button, .dropdown-content a[data-report]');
         reportButtons.forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 const reportType = this.getAttribute('data-report');
                 
                 if (reportType === 'custom') {
-                    // Open custom report modal
                     document.getElementById('customReportModal').style.display = 'flex';
                 } else {
-                    // Generate standard report
                     alert(`Generating ${formatReportName(reportType)}...`);
                     // In a real application, this would trigger the report generation process
                 }
@@ -1319,10 +1747,7 @@
                 const reportType = this.getAttribute('data-report');
                 const reportName = formatReportName(reportType);
                 
-                // Set the report name in the share modal
-                document.getElementById('reportName').textContent = reportName;
-                
-                // Open share modal
+                document.getElementById('reportNameDisplay').textContent = reportName;
                 document.getElementById('shareReportModal').style.display = 'flex';
             });
         });
@@ -1339,8 +1764,16 @@
                 return;
             }
             
+            const reportName = document.getElementById('reportName').value || 'Custom Report';
+            const saveTemplate = document.getElementById('saveTemplate').checked;
+            
             document.getElementById('customReportModal').style.display = 'none';
-            alert(`Generating custom report with sections: ${selectedSections.join(', ')}...`);
+            
+            if (saveTemplate) {
+                alert(`Custom report "${reportName}" generated and saved as template with sections: ${selectedSections.join(', ')}`);
+            } else {
+                alert(`Generating custom report "${reportName}" with sections: ${selectedSections.join(', ')}`);
+            }
         });
 
         // Export Format Selection
@@ -1369,10 +1802,111 @@
 
         // Share Report Button
         document.getElementById('shareReportBtn').addEventListener('click', function() {
-            const reportName = document.getElementById('reportName').textContent;
+            const reportName = document.getElementById('reportNameDisplay').textContent;
             
             document.getElementById('shareReportModal').style.display = 'none';
             alert(`Sharing ${reportName} as ${selectedFormat.toUpperCase()} via ${selectedMethod}...`);
+        });
+
+        // Schedule Functionality
+        document.querySelector('.action-btn').addEventListener('click', function() {
+            document.getElementById('scheduleReportModal').style.display = 'flex';
+        });
+
+        document.getElementById('saveScheduleBtn').addEventListener('click', function() {
+            const reportType = document.getElementById('scheduleReportType').value;
+            const frequency = document.getElementById('scheduleFrequency').value;
+            const startDate = document.getElementById('scheduleStart').value;
+            const recipients = document.getElementById('scheduleRecipients').value;
+            
+            document.getElementById('scheduleReportModal').style.display = 'none';
+            alert(`Scheduled ${formatReportName(reportType)} to run ${frequency} starting ${startDate} for ${recipients}`);
+        });
+
+        // AI Help Chat System
+        const helpButton = document.getElementById('helpButton');
+        const helpChatModal = document.getElementById('helpChatModal');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+
+        helpButton.addEventListener('click', function() {
+            helpChatModal.style.display = 'flex';
+        });
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function findAnswer(question) {
+            const lowerQuestion = question.toLowerCase();
+            
+            // Check network issues
+            for (const issue of knowledgeBase.networkIssues) {
+                if (lowerQuestion.includes(issue.question)) {
+                    return {
+                        answer: issue.answer,
+                        solutions: issue.solutions
+                    };
+                }
+            }
+            
+            // Check report help
+            for (const help of knowledgeBase.reportHelp) {
+                if (lowerQuestion.includes(help.question)) {
+                    return {
+                        answer: help.answer,
+                        solutions: help.solutions
+                    };
+                }
+            }
+            
+            // Check configuration
+            for (const config of knowledgeBase.configuration) {
+                if (lowerQuestion.includes(config.question)) {
+                    return {
+                        answer: config.answer,
+                        solutions: config.solutions
+                    };
+                }
+            }
+            
+            // Default response
+            return {
+                answer: "I understand you're asking about network management. Based on your NetLife Pro data, I can help with network issues, report generation, or configuration questions. Could you please provide more specific details?",
+                solutions: ["Check the Analytics page for performance data", "Review the Reports section for detailed insights", "Visit Configuration for device settings"]
+            };
+        }
+
+        sendMessageBtn.addEventListener('click', function() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                // Simulate AI thinking
+                setTimeout(() => {
+                    const response = findAnswer(message);
+                    addMessage(response.answer);
+                    
+                    // Add solutions if available
+                    if (response.solutions && response.solutions.length > 0) {
+                        setTimeout(() => {
+                            addMessage("Recommended actions: " + response.solutions.join(", "));
+                        }, 500);
+                    }
+                }, 1000);
+            }
+        });
+
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessageBtn.click();
+            }
         });
 
         // Custom Report Option
@@ -1510,6 +2044,14 @@
             document.getElementById('shareReportModal').style.display = 'none';
         });
 
+        document.getElementById('closeScheduleReportModal').addEventListener('click', function() {
+            document.getElementById('scheduleReportModal').style.display = 'none';
+        });
+
+        document.getElementById('closeHelpChatModal').addEventListener('click', function() {
+            document.getElementById('helpChatModal').style.display = 'none';
+        });
+
         // Charts
         // Failure Probability Chart
         const failureCtx = document.getElementById('failureChart').getContext('2d');
@@ -1577,6 +2119,33 @@
                 }
             }
         });
+
+        // Analytics Chart
+        const analyticsCtx = document.getElementById('analyticsChart').getContext('2d');
+        const analyticsChart = new Chart(analyticsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Network Traffic (GB)',
+                    data: [125, 140, 135, 155, 160, 110, 95],
+                    backgroundColor: '#3b82f6',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+
+        // Initialize with default selections
+        exportOptions[0].classList.add('selected');
+        shareMethods[0].classList.add('selected');
+
+        // Set default schedule date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('scheduleStart').value = tomorrow.toISOString().slice(0, 16);
     </script>
 </body>
 </html>
